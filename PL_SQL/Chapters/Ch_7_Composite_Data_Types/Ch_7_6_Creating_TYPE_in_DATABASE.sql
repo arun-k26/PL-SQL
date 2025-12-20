@@ -9,7 +9,7 @@
 create type e_list is varray(15) of varchar2(50);
 
 --UPDATE
-create or replace type e_list is varray(20) of varchar2(100);
+create or replace type e_list as varray(20) of varchar2(100);
 
 --DROP
 drop type e_list;

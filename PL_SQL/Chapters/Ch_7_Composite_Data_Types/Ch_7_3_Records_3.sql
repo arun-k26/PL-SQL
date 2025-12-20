@@ -1,4 +1,4 @@
-DECLARE
+D:\VS Code 03-05-2025\VS CODE\Pl-SQL\PL_SQL\ChaptersDECLARE
     TYPE t_edu IS RECORD (
         primary_school      VARCHAR2(100),
         high_school         VARCHAR2(100),

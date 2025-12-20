@@ -59,6 +59,7 @@ END;
     First it will create one empty one for our array then we can assign value to it.
             
 */
+
 SET SERVEROUTPUT ON
 
 DECLARE
