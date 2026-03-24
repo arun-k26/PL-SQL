@@ -65,3 +65,48 @@ SET
     salary = salary + 1000
 WHERE
     employee_id = '154';
+    
+    
+    
+--------------------------------------------------------------------------
+
+CREATE OR REPLACE TRIGGER trg_comp_emps FOR
+    INSERT OR UPDATE OR DELETE ON employees_copy
+COMPOUND TRIGGER
+    TYPE t_avg_dept_salaries IS
+        TABLE OF employees_copy.salary%TYPE INDEX BY PLS_INTEGER;
+    avg_dept_salaries t_avg_dept_salaries;
+    BEFORE STATEMENT IS BEGIN
+        FOR avg_sal IN (
+            SELECT
+                AVG(salary) salary,
+                nvl(department_id, 999) department_id
+            FROM
+                employees_copy
+            GROUP BY
+                department_id
+        ) LOOP
+            avg_dept_salaries(avg_sal.department_id) := avg_sal.salary;
+        END LOOP;
+    END BEFORE STATEMENT;
+    AFTER EACH ROW IS
+        v_interval NUMBER := 15;
+    BEGIN
+        UPDATE employees_copy
+        SET
+            commission_pct = commission_pct;
+
+        IF :new.salary > avg_dept_salaries(:new.department_id) + avg_dept_salaries(:new.department_id) * v_interval / 100 THEN
+            raise_application_error(-20005, 'A raise cannot be '
+                                            || v_interval
+                                            || ' percent higher than its department''s average!!!!');
+        END IF;
+
+    END AFTER EACH ROW;
+END;
+
+UPDATE employees_copy
+SET
+    salary = salary + 1000
+WHERE
+    employee_id = '154';
